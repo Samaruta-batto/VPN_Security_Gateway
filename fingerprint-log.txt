@@ -7,3 +7,12 @@ Language: en-US
 Resolution: 1536x816
 Plugins: dt1DgQQ, Chromium document Display, oBIjZUxY, OpenSource doc Plugin
 ------------------------
+[FINGERPRINT] IP: 127.0.0.1
+WebRTC IPs: 6a168d76-e686-4d99-b3e3-bef307bdc7c7.local
+OS: Linux
+Browser: Not=A?Brand, Chromium
+Timezone: UTC
+Language: en-US
+Resolution: 1280x720
+Plugins: PDF Viewer, Chrome PDF Viewer, Chromium PDF Viewer, Microsoft Edge PDF Viewer, WebKit built-in PDF
+------------------------
