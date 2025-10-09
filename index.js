@@ -4,7 +4,8 @@ const axios = require('axios');
 const path = require('path');
 const fs = require('fs');
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
+const host = '0.0.0.0';
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -47,6 +48,6 @@ app.post('/log-fingerprint', (req, res) => {
     res.sendStatus(200);
 });
 
-app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
+app.listen(port, host, () => {
+    console.log(`Server running on http://${host}:${port}`);
 });
