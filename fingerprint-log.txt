@@ -1,0 +1,9 @@
+[FINGERPRINT] IP: 104.28.212.15
+WebRTC IPs: 1263693e-4c7f-424d-9d39-e26c2f4277b2.local, c4b3bbf0-00b9-4407-974f-ed5ffa4c0599.local
+OS: Windows
+Browser: Brave, Chromium, Not?A_Brand
+Timezone: Asia/Calcutta
+Language: en-US
+Resolution: 1536x816
+Plugins: dt1DgQQ, Chromium document Display, oBIjZUxY, OpenSource doc Plugin
+------------------------
