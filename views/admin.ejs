@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin Dashboard - Blocked Users</title>
+    <title>Admin Dashboard - Blocked Users & Gateway Status</title>
     <style>
         * {
             margin: 0;
@@ -20,45 +20,117 @@
             color: white;
             padding: 30px;
             border-radius: 10px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         h1 {
-            margin-bottom: 10px;
+            margin-bottom: 6px;
+            font-size: 26px;
+        }
+
+        .header-subtitle {
+            opacity: 0.9;
+            font-size: 15px;
         }
         
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 20px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
         
         .stat-card {
             background: white;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
         }
         
         .stat-card h3 {
             color: #667eea;
             margin-bottom: 10px;
-            font-size: 14px;
+            font-size: 13px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .stat-card .value {
-            font-size: 32px;
+            font-size: 30px;
             font-weight: 700;
             color: #333;
         }
+
+        .stat-card .subtext {
+            font-size: 13px;
+            color: #777;
+            margin-top: 5px;
+        }
         
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn {
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .btn-danger {
+            background: #fff1f2;
+            color: #e11d48;
+            border: 1px solid #fecdd3;
+        }
+
+        .btn-danger:hover {
+            background: #ffe4e6;
+        }
+
         .table-container {
             background: white;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            overflow-x: auto;
         }
         
         table {
@@ -69,14 +141,16 @@
         th {
             background: #667eea;
             color: white;
-            padding: 15px;
+            padding: 14px 16px;
             text-align: left;
             font-weight: 600;
+            font-size: 14px;
         }
         
         td {
-            padding: 15px;
+            padding: 14px 16px;
             border-bottom: 1px solid #eee;
+            font-size: 14px;
         }
         
         tr:hover {
@@ -84,11 +158,12 @@
         }
         
         .mono {
-            font-family: monospace;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
             background: #f0f0f0;
             padding: 3px 8px;
-            border-radius: 3px;
-            font-size: 13px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #2d3748;
         }
         
         .no-data {
@@ -96,33 +171,24 @@
             padding: 40px;
             color: #999;
         }
-        
-        .refresh-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-        
-        .refresh-btn:hover {
-            background: #5568d3;
-        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>🛡️ VPN Firewall - Admin Dashboard</h1>
-        <p>Monitor and track blocked VPN/Proxy users</p>
+        <div>
+            <h1>🛡️ VPN Firewall & Security Gateway</h1>
+            <p class="header-subtitle">Real-time VPN/Proxy protection with high-performance LRU cache</p>
+        </div>
+        <div>
+            <a href="/admin-logout" class="btn btn-danger" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.4);">🚪 Logout</a>
+        </div>
     </div>
     
     <div class="stats">
         <div class="stat-card">
             <h3>Total Blocked</h3>
             <div class="value"><%= blockedUsers.length %></div>
+            <div class="subtext">All-time unique attempts logged</div>
         </div>
         <div class="stat-card">
             <h3>Last 24 Hours</h3>
@@ -132,16 +198,35 @@
                     return diff < 86400000;
                 }).length %>
             </div>
+            <div class="subtext">Recent attack attempts</div>
         </div>
         <div class="stat-card">
             <h3>Unique Countries</h3>
             <div class="value">
                 <%= [...new Set(blockedUsers.map(u => u.country))].length %>
             </div>
+            <div class="subtext">Geographic diversity</div>
+        </div>
+        <div class="stat-card">
+            <h3>LRU Cache</h3>
+            <div class="value"><%= typeof cacheStats !== 'undefined' ? cacheStats.size : 0 %> <span style="font-size: 16px; font-weight: 500; color: #667eea;">(<%= typeof cacheStats !== 'undefined' ? cacheStats.hitRate : '0%' %>)</span></div>
+            <div class="subtext">
+                <%= typeof cacheStats !== 'undefined' ? `${cacheStats.hits} hits / ${cacheStats.misses} misses` : 'Active' %>
+            </div>
         </div>
     </div>
     
-    <button class="refresh-btn" onclick="location.reload()">🔄 Refresh</button>
+    <div class="toolbar">
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="location.reload()">🔄 Refresh</button>
+            <form method="POST" action="/admin/clear-cache" style="display: inline;" onsubmit="return confirm('Clear all cached IP reputations?');">
+                <button type="submit" class="btn btn-secondary">🧹 Clear LRU Cache</button>
+            </form>
+        </div>
+        <div style="font-size: 13px; color: #718096;">
+            Cache Capacity: <strong><%= typeof cacheStats !== 'undefined' ? cacheStats.max : 10000 %> IPs</strong> (6h TTL)
+        </div>
+    </div>
     
     <div class="table-container">
         <table>
@@ -162,7 +247,7 @@
                         <td colspan="7" class="no-data">No blocked users yet</td>
                     </tr>
                 <% } else { %>
-                    <% blockedUsers.reverse().forEach(user => { %>
+                    <% [...blockedUsers].reverse().forEach(user => { %>
                         <tr>
                             <td><%= new Date(user.timestamp).toLocaleString() %></td>
                             <td><span class="mono"><%= user.ipv4 %></span></td>
@@ -179,3 +264,4 @@
     </div>
 </body>
 </html>
+

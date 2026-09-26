@@ -1,18 +1,22 @@
 {
-  "name": "vpn",
+  "name": "vpn-security-gateway",
   "version": "1.0.0",
-  "description": "",
+  "description": "High-performance VPN and proxy detection reverse-proxy security gateway for Node.js",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "test": "node test_verify.js"
   },
+
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.8.4",
+    "cookie-parser": "^1.4.7",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
-    "http-proxy-middleware": "^3.0.5"
+    "http-proxy-middleware": "^3.0.5",
+    "lru-cache": "^11.5.3"
   }
 }
